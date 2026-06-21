@@ -1,0 +1,157 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply text-gray-900 antialiased;
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  }
+}
+
+@layer components {
+  .glass {
+    @apply bg-white/70 backdrop-blur-xl border border-white/20 shadow-lg shadow-blue-900/5;
+  }
+
+  .glass-dark {
+    @apply bg-gray-900/10 backdrop-blur-xl border border-white/10 shadow-lg;
+  }
+
+  .glass-card {
+    @apply bg-white/60 backdrop-blur-xl border border-white/30 shadow-lg shadow-blue-900/5 rounded-2xl;
+  }
+
+  .glass-card-hover {
+    @apply glass-card transition-all duration-300 hover:bg-white/80 hover:shadow-xl hover:shadow-blue-900/10 hover:-translate-y-0.5;
+  }
+
+  .glass-input {
+    @apply w-full px-4 py-3 bg-white/50 backdrop-blur-sm border border-gray-200/60 rounded-xl text-sm
+           focus:outline-none focus:ring-2 focus:ring-blue-500/30 focus:border-blue-400
+           transition-all duration-200 placeholder:text-gray-400;
+  }
+
+  .btn-primary {
+    @apply px-6 py-3 bg-gradient-to-r from-blue-600 to-blue-500 text-white font-medium rounded-xl
+           shadow-lg shadow-blue-500/25 hover:shadow-xl hover:shadow-blue-500/30 hover:from-blue-700 hover:to-blue-600
+           active:scale-[0.98] transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed;
+  }
+
+  .btn-danger {
+    @apply px-6 py-3 bg-gradient-to-r from-red-600 to-red-500 text-white font-medium rounded-xl
+           shadow-lg shadow-red-500/25 hover:shadow-xl hover:shadow-red-500/30 hover:from-red-700 hover:to-red-600
+           active:scale-[0.98] transition-all duration-200;
+  }
+
+  .btn-success {
+    @apply px-6 py-3 bg-gradient-to-r from-emerald-600 to-emerald-500 text-white font-medium rounded-xl
+           shadow-lg shadow-emerald-500/25 hover:shadow-xl hover:shadow-emerald-500/30 hover:from-emerald-700 hover:to-emerald-600
+           active:scale-[0.98] transition-all duration-200;
+  }
+
+  .btn-ghost {
+    @apply px-4 py-2 text-gray-600 font-medium rounded-xl hover:bg-gray-100/50
+           active:scale-[0.98] transition-all duration-200;
+  }
+
+  .stat-card {
+    @apply glass-card p-6 relative overflow-hidden;
+  }
+
+  .stat-card::before {
+    content: '';
+    @apply absolute top-0 right-0 w-32 h-32 bg-gradient-to-bl from-blue-500/5 to-transparent rounded-full -mr-8 -mt-8;
+  }
+
+  .badge {
+    @apply px-2.5 py-1 text-xs font-medium rounded-full inline-flex items-center gap-1;
+  }
+
+  .badge-blue {
+    @apply badge bg-blue-100/80 text-blue-700 border border-blue-200/50;
+  }
+
+  .badge-green {
+    @apply badge bg-emerald-100/80 text-emerald-700 border border-emerald-200/50;
+  }
+
+  .badge-yellow {
+    @apply badge bg-amber-100/80 text-amber-700 border border-amber-200/50;
+  }
+
+  .badge-red {
+    @apply badge bg-red-100/80 text-red-700 border border-red-200/50;
+  }
+
+  .badge-gray {
+    @apply badge bg-gray-100/80 text-gray-700 border border-gray-200/50;
+  }
+
+  .badge-orange {
+    @apply badge bg-orange-100/80 text-orange-700 border border-orange-200/50;
+  }
+
+  .page-title {
+    @apply text-3xl font-bold text-gray-900 tracking-tight;
+  }
+
+  .page-subtitle {
+    @apply text-gray-500 mt-1 text-sm;
+  }
+
+  .section-header {
+    @apply flex items-center justify-between mb-6;
+  }
+}
+
+@layer utilities {
+  .text-gradient {
+    @apply bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-blue-400;
+  }
+
+  .animate-float {
+    animation: float 6s ease-in-out infinite;
+  }
+
+  .animate-pulse-soft {
+    animation: pulse-soft 2s ease-in-out infinite;
+  }
+
+  .animate-slide-up {
+    animation: slide-up 0.5s ease-out;
+  }
+
+  .animate-fade-in {
+    animation: fade-in 0.4s ease-out;
+  }
+
+  .animate-scale-in {
+    animation: scale-in 0.3s ease-out;
+  }
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+
+@keyframes pulse-soft {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.7; }
+}
+
+@keyframes slide-up {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes scale-in {
+  from { opacity: 0; transform: scale(0.95); }
+  to { opacity: 1; transform: scale(1); }
+}
