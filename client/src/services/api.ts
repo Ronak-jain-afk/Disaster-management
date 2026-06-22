@@ -81,4 +81,8 @@ export const alertApi = {
   markRead: (id: string) => api.put(`/alerts/${id}/read`),
 };
 
+export const statsApi = {
+  getDashboard: () => api.get('/stats/dashboard'),
+};
+
 export default api;

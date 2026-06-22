@@ -12,7 +12,7 @@ const generateToken = (userId: string): string => {
 };
 
 export const register = asyncHandler(async (req: Request, res: Response) => {
-  const { name, email, password, phone, role } = req.body;
+  const { name, email, password, phone } = req.body;
 
   const existingUser = await User.findOne({ email });
   if (existingUser) {
@@ -24,7 +24,6 @@ export const register = asyncHandler(async (req: Request, res: Response) => {
     email,
     password,
     phone,
-    role: role || undefined,
   });
 
   const token = generateToken(user._id.toString());

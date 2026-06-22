@@ -11,6 +11,7 @@ import volunteerRoutes from './routes/volunteers';
 import taskRoutes from './routes/tasks';
 import resourceRoutes from './routes/resources';
 import alertRoutes from './routes/alerts';
+import statsRoutes from './routes/stats';
 
 const app = express();
 
@@ -31,6 +32,7 @@ app.use('/api/volunteers', volunteerRoutes);
 app.use('/api/tasks', taskRoutes);
 app.use('/api/resources', resourceRoutes);
 app.use('/api/alerts', alertRoutes);
+app.use('/api/stats', statsRoutes);
 
 app.use(errorHandler);
 

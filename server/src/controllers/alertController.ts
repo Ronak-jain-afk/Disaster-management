@@ -2,6 +2,7 @@ import { Request, Response } from 'express';
 import Alert from '../models/Alert';
 import asyncHandler from '../utils/asyncHandler';
 import ApiError from '../utils/ApiError';
+import { broadcastAlert } from '../services/notificationService';
 
 export const getAlerts = asyncHandler(async (req: Request, res: Response) => {
   const alerts = await Alert.find()
@@ -25,6 +26,8 @@ export const getAlert = asyncHandler(async (req: Request, res: Response) => {
 export const createAlert = asyncHandler(async (req: Request, res: Response) => {
   req.body.createdBy = (req as any).user.id;
   const alert = await Alert.create(req.body);
+
+  await broadcastAlert(alert);
 
   const populatedAlert = await Alert.findById(alert._id)
     .populate('createdBy', 'name')

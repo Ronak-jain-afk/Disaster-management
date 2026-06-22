@@ -1,11 +1,42 @@
 import { useState, useEffect } from 'react';
+import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
+import L from 'leaflet';
+import 'leaflet/dist/leaflet.css';
 import { shelterApi } from '../services/api';
 import { Shelter } from '../types';
+
+L.Icon.Default.mergeOptions({
+  iconRetinaUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-2x.png',
+  iconUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png',
+  shadowUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png',
+});
+
+const getTypeColor = (type: string) => {
+  switch (type) {
+    case 'hospital': return 'from-red-500 to-rose-500';
+    case 'shelter': return 'from-blue-500 to-cyan-500';
+    case 'distribution_center': return 'from-emerald-500 to-teal-500';
+    default: return 'from-gray-500 to-gray-400';
+  }
+};
+
+const getTypeLabel = (type: string) => {
+  switch (type) {
+    case 'hospital': return 'Hospital';
+    case 'shelter': return 'Shelter';
+    case 'distribution_center': return 'Distribution Center';
+    default: return type;
+  }
+};
+
+const getOccupancyPercent = (shelter: Shelter) => {
+  return Math.round((shelter.currentOccupancy / shelter.capacity) * 100);
+};
 
 const ShelterMap = () => {
   const [shelters, setShelters] = useState<Shelter[]>([]);
   const [loading, setLoading] = useState(true);
-  const [filter, setFilter] = useState<string>('');
+  const [filter, setFilter] = useState('');
 
   useEffect(() => {
     const fetchShelters = async () => {
@@ -23,27 +54,9 @@ const ShelterMap = () => {
 
   const filtered = filter ? shelters.filter((s) => s.type === filter) : shelters;
 
-  const getTypeColor = (type: string) => {
-    switch (type) {
-      case 'hospital': return 'from-red-500 to-rose-500';
-      case 'shelter': return 'from-blue-500 to-cyan-500';
-      case 'distribution_center': return 'from-emerald-500 to-teal-500';
-      default: return 'from-gray-500 to-gray-400';
-    }
-  };
-
-  const getTypeLabel = (type: string) => {
-    switch (type) {
-      case 'hospital': return 'Hospital';
-      case 'shelter': return 'Shelter';
-      case 'distribution_center': return 'Distribution Center';
-      default: return type;
-    }
-  };
-
-  const getOccupancyPercent = (shelter: Shelter) => {
-    return Math.round((shelter.currentOccupancy / shelter.capacity) * 100);
-  };
+  const center: [number, number] = filtered.length > 0
+    ? [filtered[0].location.coordinates[1], filtered[0].location.coordinates[0]]
+    : [20.5937, 78.9629];
 
   if (loading) {
     return (
@@ -79,16 +92,34 @@ const ShelterMap = () => {
       </div>
 
       <div className="glass-card p-6 mb-8">
-        <div className="bg-gradient-to-br from-blue-50 to-blue-100/50 rounded-xl h-64 flex items-center justify-center">
-          <div className="text-center">
-            <svg className="w-12 h-12 mx-auto text-blue-300 mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7" />
-            </svg>
-            <p className="text-gray-400 text-sm">Interactive map will render here with shelter markers</p>
-            <p className="text-gray-300 text-xs mt-1">
-              Add Google Maps API key in your .env to enable maps
-            </p>
-          </div>
+        <div className="rounded-xl overflow-hidden" style={{ height: '400px' }}>
+          <MapContainer center={center} zoom={5} style={{ height: '100%', width: '100%' }}>
+            <TileLayer
+              attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+              url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+            />
+            {filtered.map((shelter) => (
+              <Marker
+                key={shelter._id}
+                position={[shelter.location.coordinates[1], shelter.location.coordinates[0]]}
+              >
+                <Popup>
+                  <div className="text-sm">
+                    <p className="font-semibold">{shelter.name}</p>
+                    <p className="text-gray-500 text-xs">{getTypeLabel(shelter.type)}</p>
+                    <p className="text-gray-600 mt-1">{shelter.address}</p>
+                    <p className="mt-1">
+                      Occupancy: {shelter.currentOccupancy}/{shelter.capacity}
+                      ({getOccupancyPercent(shelter)}%)
+                    </p>
+                    {shelter.contactPhone && (
+                      <p className="text-gray-500 text-xs mt-1">📞 {shelter.contactPhone}</p>
+                    )}
+                  </div>
+                </Popup>
+              </Marker>
+            ))}
+          </MapContainer>
         </div>
       </div>
 

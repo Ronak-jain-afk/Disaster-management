@@ -1,10 +1,19 @@
+import { useState, useEffect } from 'react';
 import { useAppSelector } from '../hooks/useAppStore';
+import { statsApi } from '../services/api';
 
-const stats = [
-  { label: 'Active Disasters', value: '0', icon: 'M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6', color: 'from-red-500 to-orange-500' },
-  { label: 'Active Volunteers', value: '0', icon: 'M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z', color: 'from-blue-500 to-cyan-500' },
-  { label: 'Available Resources', value: '0', icon: 'M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4', color: 'from-emerald-500 to-teal-500' },
-  { label: 'Nearby Shelters', value: '0', icon: 'M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z M15 11a3 3 0 11-6 0 3 3 0 016 0z', color: 'from-purple-500 to-indigo-500' },
+interface DashboardStats {
+  activeDisasters: number;
+  activeVolunteers: number;
+  availableResources: number;
+  totalShelters: number;
+}
+
+const statConfig = [
+  { label: 'Active Disasters', key: 'activeDisasters' as const, icon: 'M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6', color: 'from-red-500 to-orange-500' },
+  { label: 'Active Volunteers', key: 'activeVolunteers' as const, icon: 'M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z', color: 'from-blue-500 to-cyan-500' },
+  { label: 'Available Resources', key: 'availableResources' as const, icon: 'M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4', color: 'from-emerald-500 to-teal-500' },
+  { label: 'Nearby Shelters', key: 'totalShelters' as const, icon: 'M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z M15 11a3 3 0 11-6 0 3 3 0 016 0z', color: 'from-purple-500 to-indigo-500' },
 ];
 
 const recentActivity = [
@@ -14,6 +23,22 @@ const recentActivity = [
 
 const Dashboard = () => {
   const { user } = useAppSelector((state) => state.auth);
+  const [stats, setStats] = useState<DashboardStats | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchStats = async () => {
+      try {
+        const res = await statsApi.getDashboard();
+        setStats(res.data.data);
+      } catch {
+        console.error('Failed to fetch dashboard stats');
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchStats();
+  }, []);
 
   return (
     <div className="space-y-8 animate-fade-in">
@@ -25,12 +50,18 @@ const Dashboard = () => {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        {stats.map((stat, i) => (
+        {statConfig.map((stat, i) => (
           <div key={i} className="stat-card animate-slide-up" style={{ animationDelay: `${i * 0.1}s` }}>
             <div className="flex items-start justify-between">
               <div>
                 <p className="text-sm font-medium text-gray-500">{stat.label}</p>
-                <p className="text-3xl font-bold text-gray-900 mt-1">{stat.value}</p>
+                <p className="text-3xl font-bold text-gray-900 mt-1">
+                  {loading ? (
+                    <span className="inline-block w-8 h-8 bg-gray-200 rounded animate-pulse" />
+                  ) : (
+                    stats?.[stat.key] ?? 0
+                  )}
+                </p>
               </div>
               <div className={`w-10 h-10 rounded-xl bg-gradient-to-br ${stat.color} flex items-center justify-center shadow-lg`}>
                 <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">

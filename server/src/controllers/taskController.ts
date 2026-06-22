@@ -2,6 +2,7 @@ import { Request, Response } from 'express';
 import Task from '../models/Task';
 import asyncHandler from '../utils/asyncHandler';
 import ApiError from '../utils/ApiError';
+import { notifyTaskUpdate } from '../services/notificationService';
 
 export const getTasks = asyncHandler(async (req: Request, res: Response) => {
   const { status, disaster } = req.query;
@@ -22,7 +23,18 @@ export const getTasks = asyncHandler(async (req: Request, res: Response) => {
 export const createTask = asyncHandler(async (req: Request, res: Response) => {
   req.body.assignedBy = (req as any).user.id;
   const task = await Task.create(req.body);
-  res.status(201).json({ success: true, data: task });
+
+  const populated = await Task.findById(task._id)
+    .populate('assignedTo', 'name email phone')
+    .populate('assignedBy', 'name')
+    .populate('disaster', 'name type severity');
+
+  if (populated?.assignedTo) {
+    const assigneeId = typeof populated.assignedTo === 'object' ? (populated.assignedTo as any)._id.toString() : populated.assignedTo;
+    notifyTaskUpdate(assigneeId, populated);
+  }
+
+  res.status(201).json({ success: true, data: populated });
 });
 
 export const updateTaskStatus = asyncHandler(async (req: Request, res: Response) => {
@@ -34,7 +46,14 @@ export const updateTaskStatus = asyncHandler(async (req: Request, res: Response)
   task.status = status;
   await task.save();
 
-  res.json({ success: true, data: task });
+  const populated = await Task.findById(task._id)
+    .populate('assignedTo', 'name email phone')
+    .populate('assignedBy', 'name')
+    .populate('disaster', 'name type severity');
+
+  notifyTaskUpdate(task.assignedTo.toString(), populated);
+
+  res.json({ success: true, data: populated });
 });
 
 export const addTaskProgress = asyncHandler(async (req: Request, res: Response) => {
@@ -52,5 +71,12 @@ export const addTaskProgress = asyncHandler(async (req: Request, res: Response) 
 
   await task.save();
 
-  res.json({ success: true, data: task });
+  const populated = await Task.findById(task._id)
+    .populate('assignedTo', 'name email phone')
+    .populate('assignedBy', 'name')
+    .populate('disaster', 'name type severity');
+
+  notifyTaskUpdate(task.assignedTo.toString(), populated);
+
+  res.json({ success: true, data: populated });
 });
