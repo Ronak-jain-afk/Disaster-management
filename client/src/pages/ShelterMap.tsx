@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react';
 import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
 import L from 'leaflet';
-import 'leaflet/dist/leaflet.css';
 import { shelterApi } from '../services/api';
 import { Shelter } from '../types';
 
@@ -91,8 +90,8 @@ const ShelterMap = () => {
         </select>
       </div>
 
-      <div className="glass-card p-6 mb-8">
-        <div className="rounded-xl overflow-hidden" style={{ height: '400px' }}>
+      <div className="bg-white rounded-2xl shadow-lg shadow-blue-900/5 p-6 mb-8 border border-gray-200/60">
+        <div className="rounded-xl overflow-hidden" style={{ height: '450px', minHeight: '450px' }}>
           <MapContainer center={center} zoom={5} style={{ height: '100%', width: '100%' }}>
             <TileLayer
               attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
