@@ -22,17 +22,17 @@ const Navbar = () => {
   ];
 
   return (
-    <nav className="sticky top-0 z-50 glass border-b border-blue-100/50">
+    <nav className="sticky top-0 z-50 bg-white shadow-navbar border-b border-surface-border">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between h-16 items-center">
           <div className="flex items-center space-x-8">
             <Link to="/" className="flex items-center space-x-2">
-              <div className="w-8 h-8 bg-gradient-to-br from-blue-600 to-blue-400 rounded-lg flex items-center justify-center shadow-lg shadow-blue-500/20">
+              <div className="w-8 h-8 bg-brand-500 rounded-lg flex items-center justify-center">
                 <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z" />
                 </svg>
               </div>
-              <span className="text-lg font-bold text-gradient">Emergency Alerts</span>
+              <span className="text-lg font-bold text-ink">Emergency Alerts</span>
             </Link>
             <div className="hidden md:flex items-center space-x-1">
               {navLinks.map((link) => {
@@ -41,10 +41,10 @@ const Navbar = () => {
                   <Link
                     key={link.path}
                     to={link.path}
-                    className={`flex items-center space-x-1.5 px-3 py-2 rounded-xl text-sm font-medium transition-all duration-200 ${
+                    className={`flex items-center space-x-1.5 px-3 py-2 rounded-btn text-sm font-medium transition-all duration-200 ${
                       isActive
-                        ? 'bg-blue-500/10 text-blue-700 shadow-sm'
-                        : 'text-gray-500 hover:text-gray-700 hover:bg-gray-100/50'
+                        ? 'bg-accent-subtle text-accent'
+                        : 'text-ink-muted hover:text-ink hover:bg-surface-subtle'
                     }`}
                   >
                     <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -58,19 +58,19 @@ const Navbar = () => {
           </div>
           <div className="flex items-center space-x-3">
             <NotificationBell />
-            <div className="flex items-center space-x-3 pl-3 border-l border-gray-200/60">
+            <div className="flex items-center space-x-3 pl-3 border-l border-surface-border">
               <div className="flex items-center space-x-2">
-                <div className="w-8 h-8 bg-gradient-to-br from-blue-500 to-blue-600 rounded-full flex items-center justify-center text-white text-xs font-bold shadow-md">
+                <div className="w-8 h-8 bg-brand-500 rounded-full flex items-center justify-center text-white text-xs font-bold">
                   {user?.name?.charAt(0).toUpperCase()}
                 </div>
                 <div className="hidden sm:block">
-                  <p className="text-sm font-medium text-gray-700 leading-tight">{user?.name}</p>
-                  <p className="text-xs text-gray-400 capitalize">{user?.role}</p>
+                  <p className="text-sm font-medium text-ink leading-tight">{user?.name}</p>
+                  <p className="text-xs text-ink-muted capitalize">{user?.role}</p>
                 </div>
               </div>
               <button
                 onClick={handleLogout}
-                className="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100/50 rounded-xl transition-all duration-200"
+                className="btn-ghost p-2"
                 title="Logout"
               >
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
