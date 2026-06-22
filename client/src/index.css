@@ -3,19 +3,49 @@
 @tailwind utilities;
 
 @layer base {
+  :root {
+    --color-bg: #ffffff;
+    --color-surface: oklch(0.97 0.004 250);
+    --color-border: oklch(0.91 0.006 250);
+    --color-border-hover: oklch(0.85 0.008 250);
+    --color-ink: oklch(0.14 0.008 250);
+    --color-ink-secondary: oklch(0.50 0.015 250);
+    --color-ink-muted: oklch(0.65 0.015 250);
+    --color-brand-100: oklch(0.92 0.04 45);
+    --color-brand-500: oklch(0.52 0.16 45);
+    --color-brand-600: oklch(0.44 0.15 45);
+    --color-brand-700: oklch(0.36 0.13 45);
+    --color-accent: oklch(0.48 0.14 235);
+    --color-accent-hover: oklch(0.40 0.12 235);
+    --color-accent-subtle: oklch(0.92 0.03 235);
+    --color-danger: oklch(0.48 0.18 30);
+    --color-danger-hover: oklch(0.40 0.16 30);
+    --color-danger-subtle: oklch(0.93 0.03 30);
+    --color-success: oklch(0.50 0.14 150);
+    --color-success-hover: oklch(0.42 0.12 150);
+    --color-success-subtle: oklch(0.93 0.03 150);
+    --color-warning: oklch(0.62 0.14 80);
+    --color-warning-hover: oklch(0.54 0.13 80);
+    --color-warning-subtle: oklch(0.94 0.03 80);
+  }
+
   body {
-    @apply bg-surface text-ink antialiased;
+    background-color: var(--color-bg);
+    color: var(--color-ink);
+    @apply antialiased;
     font-family: 'Inter', system-ui, -apple-system, sans-serif;
   }
 }
 
 @layer components {
   .page-title {
-    @apply text-3xl font-semibold tracking-tight text-ink;
+    @apply text-3xl font-semibold tracking-tight;
+    color: var(--color-ink);
   }
 
   .page-subtitle {
-    @apply mt-1.5 text-sm text-ink-secondary;
+    @apply mt-1.5 text-sm;
+    color: var(--color-ink-secondary);
   }
 
   .section-header {
@@ -23,31 +53,54 @@
   }
 
   .card {
-    @apply bg-white rounded-card border border-surface-border shadow-card;
+    @apply bg-white rounded-card shadow-card;
+    border: 1px solid var(--color-border);
   }
 
   .card-hover {
-    @apply card transition-all duration-200 hover:border-surface-border-hover hover:shadow-elevated;
+    @apply card transition-all duration-200;
+  }
+
+  .card-hover:hover {
+    border-color: var(--color-border-hover);
+    box-shadow: var(--tw-shadow-colored);
   }
 
   .stat-value {
-    @apply text-3xl font-semibold tracking-tight text-ink;
+    @apply text-3xl font-semibold tracking-tight;
+    color: var(--color-ink);
   }
 
   .stat-label {
-    @apply text-sm text-ink-secondary;
+    @apply text-sm;
+    color: var(--color-ink-secondary);
   }
 
   .input {
-    @apply block w-full px-3.5 py-2.5 rounded-btn border border-surface-border bg-white text-sm text-ink
-         placeholder:text-ink-muted
-         focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-brand-500
+    @apply block w-full px-3.5 py-2.5 rounded-btn text-sm bg-white
            disabled:opacity-50 disabled:cursor-not-allowed
-           transition-all duration-200;
+           focus:outline-none;
+    border: 1px solid var(--color-border);
+    color: var(--color-ink);
+  }
+
+  .input::placeholder {
+    color: var(--color-ink-muted);
+  }
+
+  .input:focus {
+    border-color: var(--color-brand-500);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-brand-500) 20%, transparent);
   }
 
   .input-error {
-    @apply input border-danger focus:ring-danger focus:border-danger;
+    @apply input;
+    border-color: var(--color-danger);
+  }
+
+  .input-error:focus {
+    border-color: var(--color-danger);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-danger) 20%, transparent);
   }
 
   .btn {
@@ -55,40 +108,76 @@
            transition-all duration-200
            disabled:opacity-50 disabled:cursor-not-allowed
            focus:outline-none focus:ring-2 focus:ring-offset-2;
+    border: 1px solid transparent;
   }
 
   .btn-primary {
-    @apply btn bg-brand-500 text-white
-           hover:bg-brand-600
-           focus:ring-brand-500
-           active:bg-brand-700;
+    @apply btn text-white;
+    background-color: var(--color-brand-500);
+  }
+
+  .btn-primary:hover {
+    background-color: var(--color-brand-600);
+  }
+
+  .btn-primary:active {
+    background-color: var(--color-brand-700);
+  }
+
+  .btn-primary:focus-visible {
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-brand-500) 40%, transparent);
   }
 
   .btn-accent {
-    @apply btn bg-accent text-white
-           hover:bg-accent-hover
-           focus:ring-accent
-           active:bg-accent-hover;
+    @apply btn text-white;
+    background-color: var(--color-accent);
+  }
+
+  .btn-accent:hover {
+    background-color: var(--color-accent-hover);
+  }
+
+  .btn-accent:focus-visible {
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-accent) 40%, transparent);
   }
 
   .btn-danger {
-    @apply btn bg-danger text-white
-           hover:bg-danger-hover
-           focus:ring-danger
-           active:bg-danger-hover;
+    @apply btn text-white;
+    background-color: var(--color-danger);
+  }
+
+  .btn-danger:hover {
+    background-color: var(--color-danger-hover);
+  }
+
+  .btn-danger:focus-visible {
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-danger) 40%, transparent);
   }
 
   .btn-success {
-    @apply btn bg-success text-white
-           hover:bg-success-hover
-           focus:ring-success
-           active:bg-success-hover;
+    @apply btn text-white;
+    background-color: var(--color-success);
+  }
+
+  .btn-success:hover {
+    background-color: var(--color-success-hover);
+  }
+
+  .btn-success:focus-visible {
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-success) 40%, transparent);
   }
 
   .btn-ghost {
-    @apply btn text-ink-secondary bg-transparent
-           hover:bg-surface-subtle
-           focus:ring-ink-muted;
+    @apply btn bg-transparent;
+    color: var(--color-ink-secondary);
+  }
+
+  .btn-ghost:hover {
+    background-color: var(--color-surface);
+  }
+
+  .btn-ghost:focus-visible {
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-ink-muted) 30%, transparent);
   }
 
   .btn-sm {
@@ -100,26 +189,42 @@
   }
 
   .badge-brand {
-    @apply badge bg-brand-100 text-brand-700;
+    @apply badge;
+    background-color: var(--color-brand-100);
+    color: var(--color-brand-700);
   }
 
   .badge-accent {
-    @apply badge bg-accent-subtle text-accent-hover;
+    @apply badge;
+    background-color: var(--color-accent-subtle);
+    color: var(--color-accent-hover);
   }
 
   .badge-success {
-    @apply badge bg-success-subtle text-success-hover;
+    @apply badge;
+    background-color: var(--color-success-subtle);
+    color: var(--color-success-hover);
   }
 
   .badge-danger {
-    @apply badge bg-danger-subtle text-danger-hover;
+    @apply badge;
+    background-color: var(--color-danger-subtle);
+    color: var(--color-danger-hover);
   }
 
   .badge-warning {
-    @apply badge bg-warning-subtle text-warning-hover;
+    @apply badge;
+    background-color: var(--color-warning-subtle);
+    color: var(--color-warning-hover);
   }
 
   .link {
-    @apply text-accent hover:text-accent-hover underline-offset-2 hover:underline transition-all duration-200;
+    @apply underline-offset-2 transition-all duration-200;
+    color: var(--color-accent);
+  }
+
+  .link:hover {
+    color: var(--color-accent-hover);
+    text-decoration: underline;
   }
 }
